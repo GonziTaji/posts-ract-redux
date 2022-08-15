@@ -1,34 +1,38 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Proceso de selección desarrollador web
 
-## Getting Started
+## Challenge de desarrollo de aplicación en React con backend en Ruby on Rails o NodeJS, Base de datos SQL
 
-First, run the development server:
+El trabajo consiste en crear una pequeña aplicación en react, con Redux, que maneje Posts.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+Los Posts deben tener:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Nombre
+2. Descrpición
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+Buenas prácticas:
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+1. JSON camel-case
+2. JS camel-case
+3. Ruby en snake case
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Funcionalidades aplicación web hecha con React y Redux
 
-## Learn More
+1. Insertar posts
+2. Eliminar posts
+3. Listar posts
+4. Filtrar posts por nombre localmente
 
-To learn more about Next.js, take a look at the following resources:
+Estructura:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Formulario
+2. Filtro
+3. Lista
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Backend (API JSON) en Node.js o Rails:
 
-## Deploy on Vercel
+1. Crear posts: Deberá retornar el post creado
+2. Eliminar posts: Deberá retornar el post eliminado
+3. Obtener lista de posts: Deberá retornar todos los posts
+4. BD en postgreSQL
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Solo se debe llamar al endpoint que entrega la lista completa de posts una sola vez por cada vez que se cargue la vista.
