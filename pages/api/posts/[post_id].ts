@@ -16,13 +16,13 @@ export default async function handler(
 }
 
 async function deleteHandler(req: NextApiRequest, res: NextApiResponse<any>) {
-    const { id } = req.query;
+    const { post_id } = req.query;
 
-    if (!id) throw 'missing parameter id to delete post';
+    if (!post_id || typeof post_id !== 'string') {
+        throw 'missing parameter id to delete post';
+    }
 
-    const deleteResponse = await sql`
-        delete from posts where id = ${id}
-    `;
+    await sql`delete from posts where post_id = ${post_id}`;
 
-    res.json({ response: deleteResponse[0] });
+    res.json({ post_id });
 }

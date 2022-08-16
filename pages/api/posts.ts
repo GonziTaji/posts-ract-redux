@@ -32,7 +32,7 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse<any>) {
         RETURNING post_id
     `;
 
-    res.json({ response: insertResponse[0] });
+    res.json(insertResponse[0]);
 }
 
 async function getHandler(
@@ -42,8 +42,6 @@ async function getHandler(
     const list = await sql`
         select * from posts
     `;
-
-    console.log(list);
 
     res.json({ posts: list as any });
 }

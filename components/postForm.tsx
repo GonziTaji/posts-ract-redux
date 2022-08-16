@@ -1,8 +1,14 @@
 import { FormEvent } from 'react';
+import { useSelector } from 'react-redux';
+import { useAppDispatch } from '../appstate/hooks';
+import { createPost, selectPostForm, setForm } from '../appstate/store';
 
 interface PostFormProps {}
 
 export default function PostForm({}: PostFormProps) {
+    const dispatch = useAppDispatch();
+    const postForm = useSelector(selectPostForm);
+
     const onsubmit = async (ev: FormEvent) => {
         ev.preventDefault();
         const headers = new Headers();
@@ -17,21 +23,50 @@ export default function PostForm({}: PostFormProps) {
                 description: 'este es mi primer post',
             }) as any,
         });
-
-        console.log(response);
     };
 
     return (
-        <form onSubmit={onsubmit}>
+        <div>
             <label htmlFor="name">Nombre</label>
-            <input type="text" className="form-control" id="name" />
+            <input
+                value={postForm.name}
+                type="text"
+                className="form-control"
+                id="name"
+                onChange={(ev) =>
+                    dispatch(
+                        setForm({
+                            field: 'name',
+                            value: ev.currentTarget.value,
+                        })
+                    )
+                }
+            />
 
             <label htmlFor="description">Descripción</label>
-            <textarea className="form-control" id="description" />
+            <textarea
+                value={postForm.description}
+                className="form-control"
+                id="description"
+                onChange={(ev) =>
+                    dispatch(
+                        setForm({
+                            field: 'description',
+                            value: ev.currentTarget.value,
+                        })
+                    )
+                }
+            />
 
             <div className="text-end">
-                <button className="btn btn-sm btn-primary">Crear</button>
+                <button
+                    type="button"
+                    className="btn btn-sm btn-primary"
+                    onClick={() => dispatch(createPost(postForm))}
+                >
+                    Crear
+                </button>
             </div>
-        </form>
+        </div>
     );
 }
