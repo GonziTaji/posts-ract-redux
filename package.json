@@ -10,9 +10,15 @@
         "prettier": "prettier --write ."
     },
     "dependencies": {
+        "@reduxjs/toolkit": "^1.8.4",
+        "@types/react-redux": "^7.1.24",
+        "bootstrap": "^5.2.0",
         "next": "12.2.5",
+        "postgres": "^3.2.4",
         "react": "18.2.0",
-        "react-dom": "18.2.0"
+        "react-dom": "18.2.0",
+        "react-redux": "^8.0.2",
+        "redux-thunk": "^2.4.1"
     },
     "devDependencies": {
         "@types/node": "18.7.3",
