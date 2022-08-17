@@ -1,71 +1,81 @@
-import { FormEvent } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../appstate/hooks';
-import { createPost, selectPostForm, setForm } from '../appstate/store';
+import {
+    createPost,
+    selectPostForm,
+    selectStatus,
+    setForm,
+} from '../appstate/store';
+import { WithClassName } from '../interfaces';
 
-interface PostFormProps {}
+interface PostFormProps extends WithClassName {}
 
-export default function PostForm({}: PostFormProps) {
+export default function PostForm({ className }: PostFormProps) {
     const dispatch = useAppDispatch();
     const postForm = useSelector(selectPostForm);
-
-    const onsubmit = async (ev: FormEvent) => {
-        ev.preventDefault();
-        const headers = new Headers();
-
-        headers.append('Content-Type', 'application/json');
-
-        const response = await fetch('/api/posts', {
-            method: 'POST',
-            headers,
-            body: JSON.stringify({
-                name: 'post 1',
-                description: 'este es mi primer post',
-            }) as any,
-        });
-    };
+    const status = useSelector(selectStatus);
 
     return (
-        <div>
-            <label htmlFor="name">Nombre</label>
-            <input
-                value={postForm.name}
-                type="text"
-                className="form-control"
-                id="name"
-                onChange={(ev) =>
-                    dispatch(
-                        setForm({
-                            field: 'name',
-                            value: ev.currentTarget.value,
-                        })
-                    )
-                }
-            />
+        <div className={'card ' + className}>
+            <div
+                className="card-body row"
+                style={{ gridTemplateColumns: 'auto 1fr auto' }}
+            >
+                <div className="col-12 col-sm-4">
+                    <input
+                        value={postForm.name}
+                        type="text"
+                        placeholder="Nombre"
+                        className="form-control"
+                        id="name"
+                        onChange={(ev) =>
+                            dispatch(
+                                setForm({
+                                    field: 'name',
+                                    value: ev.currentTarget.value,
+                                })
+                            )
+                        }
+                    />
+                </div>
 
-            <label htmlFor="description">Descripción</label>
-            <textarea
-                value={postForm.description}
-                className="form-control"
-                id="description"
-                onChange={(ev) =>
-                    dispatch(
-                        setForm({
-                            field: 'description',
-                            value: ev.currentTarget.value,
-                        })
-                    )
-                }
-            />
+                <div className="col-12 col-sm">
+                    <textarea
+                        rows={1}
+                        value={postForm.description}
+                        className="form-control"
+                        placeholder="Descripción"
+                        id="description"
+                        onChange={(ev) =>
+                            dispatch(
+                                setForm({
+                                    field: 'description',
+                                    value: ev.currentTarget.value,
+                                })
+                            )
+                        }
+                    />
+                </div>
 
-            <div className="text-end">
-                <button
-                    type="button"
-                    className="btn btn-sm btn-primary"
-                    onClick={() => dispatch(createPost(postForm))}
-                >
-                    Crear
-                </button>
+                <div className="col-12 col-sm-auto text-end">
+                    <button
+                        type="button"
+                        className="btn btn-success"
+                        onClick={() => dispatch(createPost(postForm))}
+                    >
+                        Crear Post
+                        {status === 'loading-list' && (
+                            <div
+                                className="spinner-border text-primary"
+                                role="status"
+                            >
+                                <span className="visually-hidden">
+                                    Cargando...
+                                </span>
+                            </div>
+                        )}
+                    </button>
+                </div>
             </div>
         </div>
     );

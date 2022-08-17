@@ -1,56 +1,96 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../appstate/hooks';
 import {
     deletePost,
     fetchPosts,
+    selectActiveSearchterm,
     selectDisplayedPosts,
     selectPosts,
     selectStatus,
 } from '../appstate/store';
+import { WithClassName } from '../interfaces';
 
-interface PostListProps {
-    // posts: Post[];
-}
+interface PostListProps extends WithClassName {}
 
-export default function PostList({}: PostListProps) {
+const BigNumber = ({ children }: any) => (
+    <span className="lead px-2 bold">{children}</span>
+);
+
+export default function PostList({ className = '' }: PostListProps) {
     const dispatch = useAppDispatch();
-    // const dispatchDeletePosts = (id: string) => dispatch(deletePost(id))
     const posts = useSelector(selectPosts);
     const displayedPosts = useSelector(selectDisplayedPosts);
     const status = useSelector(selectStatus);
+    const activeSearchTerm = useSelector(selectActiveSearchterm);
 
     useEffect(() => {
         dispatch(fetchPosts());
     }, [dispatch]);
 
     return (
-        <table className="table table-striped">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Acción</th>
-                </tr>
-            </thead>
+        <div className={'card ' + className}>
+            <div className="card-body">
+                <table className="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th className="text-right">Acción</th>
+                        </tr>
+                    </thead>
 
-            <tbody>
-                {displayedPosts.map(({ post_id, name, description }, i) => (
-                    <tr key={i}>
-                        <td>{name}</td>
-                        <td>{description}</td>
-                        <td>
-                            <button
-                                className="btn btn-sm btn-danger"
-                                onClick={() => dispatch(deletePost(post_id))}
-                            >
-                                Eliminar
-                            </button>
-                        </td>
-                    </tr>
-                ))}
-            </tbody>
-        </table>
+                    <tbody>
+                        {status === 'loading-list' ? (
+                            <tr>
+                                <td colSpan={3} className="text-end">
+                                    <span>Cargando Posts</span>
+                                    <div
+                                        className="spinner-border text-primary"
+                                        role="status"
+                                    >
+                                        <span className="visually-hidden">
+                                            Cargando...
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        ) : (
+                            displayedPosts.map(
+                                ({ post_id, name, description }, i) => (
+                                    <tr key={i}>
+                                        <td>{name}</td>
+                                        <td>{description}</td>
+                                        <td style={{ width: '1px' }}>
+                                            <button
+                                                className="btn btn-danger"
+                                                onClick={() =>
+                                                    dispatch(
+                                                        deletePost(post_id)
+                                                    )
+                                                }
+                                            >
+                                                Eliminar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                )
+                            )
+                        )}
+                    </tbody>
+                </table>
+
+                <div className="d-flex justify-content-between align-items-center">
+                    <span>Filtro activo: {activeSearchTerm}</span>
+
+                    <span>
+                        Mostrando
+                        <BigNumber>{displayedPosts.length}</BigNumber>
+                        Posts de
+                        <BigNumber>{posts.length}</BigNumber>
+                    </span>
+                </div>
+            </div>
+        </div>
     );
 }

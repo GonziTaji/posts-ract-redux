@@ -3,3 +3,7 @@ export interface Post {
     name: string;
     description: string;
 }
+
+export interface WithClassName {
+    className?: string;
+}

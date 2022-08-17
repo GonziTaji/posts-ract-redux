@@ -1,4 +1,6 @@
 import {
+    Action,
+    AnyAction,
     configureStore,
     createAsyncThunk,
     createSlice,
@@ -15,6 +17,7 @@ interface AppState {
     displayedPosts: Post[];
     postForm: NewPostForm;
     searchTerm: string;
+    activeSearchTerm: string;
     status: 'loading-list' | 'loading-add' | 'loading-delete' | 'idle';
 }
 
@@ -26,6 +29,7 @@ const initialState: AppState = {
         description: '',
     },
     searchTerm: '',
+    activeSearchTerm: '',
     status: 'idle',
 };
 
@@ -79,21 +83,10 @@ const postSlice = createSlice({
     name: 'posts',
     initialState,
     reducers: {
-        // addPost(state, action) {
-        //     state.posts.push(state.postForm);
-        //     state.postForm.name = '';
-        //     state.postForm.description = '';
-        // },
-        // removePost(state, action) {
-        //     const index = state.posts.findIndex(
-        //         ({ post_id }) => post_id === action.payload.id
-        //     );
-
-        //     state.posts.splice(index, 1);
-        // },
         setForm(
             state,
             action: {
+                type: string;
                 payload: { field: 'name' | 'description'; value: string };
             }
         ) {
@@ -101,19 +94,17 @@ const postSlice = createSlice({
 
             state.postForm[fieldChanged] = action.payload.value;
         },
-        filterPosts(state, action) {
-            state.searchTerm = action.payload.searchTerm.trim();
+        setSearchTerm(state, action: { type: string; payload: string }) {
+            state.searchTerm = action.payload;
+        },
+        filterPosts(state) {
+            state.activeSearchTerm = state.searchTerm;
             state.displayedPosts = _filterPosts(state.posts, state.searchTerm);
-
-            if (state.searchTerm === '') {
-                state.displayedPosts = state.posts;
-            } else {
-                const pattern = new RegExp(state.searchTerm, 'i');
-
-                state.displayedPosts = state.posts.filter(
-                    (p) => pattern.test(p.name) || pattern.test(p.description)
-                );
-            }
+        },
+        clearFilters(state) {
+            state.activeSearchTerm = '';
+            state.searchTerm = '';
+            state.displayedPosts = _filterPosts(state.posts, state.searchTerm);
         },
     },
     extraReducers: (builder) => {
@@ -138,7 +129,7 @@ const postSlice = createSlice({
 
                 state.displayedPosts = _filterPosts(
                     state.posts,
-                    state.searchTerm
+                    state.activeSearchTerm
                 );
 
                 state.postForm.name = '';
@@ -157,7 +148,7 @@ const postSlice = createSlice({
 
                 state.displayedPosts = _filterPosts(
                     state.posts,
-                    state.searchTerm
+                    state.activeSearchTerm
                 );
 
                 state.status = 'idle';
@@ -169,13 +160,16 @@ const store = configureStore({
     reducer: postSlice.reducer,
 });
 
-export const { setForm, filterPosts } = postSlice.actions;
+export const { setForm, setSearchTerm, filterPosts, clearFilters } =
+    postSlice.actions;
 
 export const selectPosts = (state: AppState) => state.posts;
 export const selectDisplayedPosts = (state: AppState) => state.displayedPosts;
 export const selectPostForm = (state: AppState) => state.postForm;
 export const selectStatus = (state: AppState) => state.status;
 export const selectSearchterm = (state: AppState) => state.searchTerm;
+export const selectActiveSearchterm = (state: AppState) =>
+    state.activeSearchTerm;
 
 export default store;
 
